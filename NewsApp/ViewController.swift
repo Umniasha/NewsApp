@@ -22,8 +22,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        titleLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
+        titleLabel.numberOfLines = 0
         titleLabel.text = article.title
+        descriptionLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
+        descriptionLabel.numberOfLines = 0
         descriptionLabel.text = article.description
+        print(article.description)
         
         DispatchQueue.main.async {
             if let url = URL(string: self.article.urlToImage) {
@@ -34,6 +39,7 @@ class ViewController: UIViewController {
             } else {
                 self.imgView.isHidden = true
                 self.activity.isHidden = true
+                
             }
           
         }

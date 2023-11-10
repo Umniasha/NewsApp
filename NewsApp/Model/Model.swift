@@ -7,7 +7,24 @@
 
 import Foundation
 
-var articles : [Article] = []
+var articles : [Article] {
+    let data = try? Data(contentsOf: urlData)
+    if  let data = data {
+            let rootDictinary = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, Any>
+        if let rootDictinary = rootDictinary {
+            if let array = rootDictinary["articles"] as? [Dictionary<String, Any>] {
+    
+                var returnArray : [Article] = []
+                    for dict in array {
+                        let newArticle = Article(dictinary: dict)
+                        returnArray.append(newArticle)
+                    }
+                return returnArray
+            }
+        }
+    }
+    return []
+}
 var urlData: URL {
     let path = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0] + "/data.json"
     let urlPath = URL(fileURLWithPath: path)
@@ -26,8 +43,7 @@ func loadNews (completionCenter : (()->Void)?) {
            
             try? FileManager.default.copyItem(at: urlFile!, to: urlData)
             
-           // print(urlPath)
-            parseNews()
+          
             completionCenter?()
         }
     }
@@ -38,17 +54,5 @@ func loadNews (completionCenter : (()->Void)?) {
 func parseNews () {
    
     
-    let data = try? Data(contentsOf: urlData)
-    guard let data = data else { return }
-    let rootDictinary = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, Any>
-    guard let rootDictinary = rootDictinary else { return }
-    if let array = rootDictinary["articles"] as? [Dictionary<String, Any>] {
-    
-        var returnArray : [Article] = []
-            for dict in array {
-                let newArticle = Article(dictinary: dict)
-                returnArray.append(newArticle)
-            }
-        articles = returnArray
-    }
+   
 }
